@@ -1,1 +1,12 @@
-
+{
+  "@context": "https://schema.org",
+  "@type": "DataCatalog",
+  "name": "Catálogo TCDS — Convergencia",
+  "creator": { "@type": "Person", "name": "Genaro Carrasco Ozuna", "identifier": "ORCID:0009-0005-6358-9910" },
+  "license": [
+    "https://creativecommons.org/licenses/by/4.0/",
+    "https://opensource.org/licenses/MIT"
+  ],
+  "dateCreated": "2025-11-07",
+  "dataset": []
+}
