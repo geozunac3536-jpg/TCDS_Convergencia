@@ -1,139 +1,90 @@
+<!-- © 2025 Genaro Carrasco Ozuna — CC BY 4.0 (texto) / MIT (código) -->
 <!doctype html>
 <html lang="es">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TCDS — Convergencia</title>
-<style>
-body{font-family:system-ui,Arial,sans-serif;max-width:980px;margin:28px auto;padding:0 12px;line-height:1.45}
-h1{margin:0 0 8px} .meta{color:#555;font-size:.95em;margin-bottom:16px}
-.card{border:1px solid #ddd;border-radius:10px;padding:12px;margin:10px 0}
-.btn{display:inline-block;padding:8px 12px;border:1px solid #222;border-radius:8px;text-decoration:none}
-.grid{display:grid;gap:10px}
-@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-code{background:#f6f8fa;padding:2px 4px;border-radius:4px}
-footer{margin:30px 0;color:#666;font-size:.9em}
-</style>
-<main>
-  <h1>TCDS — Convergencia de Repositorios</h1>
-  <div class="meta">
-    Autor: Genaro Carrasco Ozuna · ORCID: <a href="https://orcid.org/0009-0005-6358-9910" target="_blank">0009-0005-6358-9910</a>
-  </div>
+<meta name="color-scheme" content="dark">
+<title>TCDS — Convergencia de Repositorios</title>
+<meta name="description" content="Catálogo unificado TCDS: enlaces a repos, páginas públicas, DOI y metadatos JSON-LD listos para indexación.">
+<link rel="canonical" href="https://geozunac3536-jpg.github.io/TCDS-Convergencia/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
-  <div style="margin:12px 0">
-    <label>Usuario GitHub origen: </label>
-    <input id="owner" value="geozunac3536-jpg" style="padding:6px 8px;border:1px solid #ccc;border-radius:8px">
-    <button class="btn" id="fetchBtn">Construir Catálogo</button>
-  </div>
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="TCDS — Convergencia de Repositorios">
+<meta property="og:description" content="Catálogo unificado TCDS con JSON-LD DataCatalog.">
+<meta property="og:url" content="https://geozunac3536-jpg.github.io/TCDS-Convergencia/">
+<meta property="og:site_name" content="TCDS Convergencia">
 
-  <div id="summary" class="meta"></div>
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TCDS — Convergencia de Repositorios">
+<meta name="twitter:description" content="Catálogo unificado TCDS con JSON-LD DataCatalog.">
 
-  <div style="margin:12px 0">
-    <button class="btn" id="dlCatalogo" disabled>Descargar <code>catalogo.json</code></button>
-    <button class="btn" id="dlJSONLD"  disabled>Descargar <code>tcds_convergencia.jsonld</code></button>
-  </div>
+<!-- Señal explícita al DataCatalog externo -->
+<link rel="alternate" type="application/ld+json" href="tcds_convergencia.jsonld">
 
-  <div id="listado" class="grid"></div>
+<!-- JSON-LD: WebSite -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebSite",
+  "name":"TCDS — Convergencia",
+  "url":"https://geozunac3536-jpg.github.io/TCDS-Convergencia/",
+  "publisher":{
+    "@type":"Organization",
+    "name":"Proyecto TCDS / MSL",
+    "sameAs":[ "https://orcid.org/0009-0005-6358-9910" ]
+  },
+  "potentialAction":{
+    "@type":"SearchAction",
+    "target":"https://github.com/search?q={search_term_string}+user%3Ageozunac3536-jpg",
+    "query-input":"required name=search_term_string"
+  }
+}
+</script>
 
-  <footer>
-    Esta página consulta la API pública de GitHub desde tu navegador y genera los archivos descargables sin usar servidores externos.
+<!-- GA4 (opcional)
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date()); gtag('config','G-XXXXXXXXXX');</script>
+-->
+
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="header">
+    <h1>TCDS — Convergencia de Repositorios</h1>
+    <p class="meta">
+      Autor: <strong>Genaro Carrasco Ozuna</strong> · ORCID
+      <a class="link" href="https://orcid.org/0009-0005-6358-9910" target="_blank" rel="noopener">0009-0005-6358-9910</a>
+    </p>
+  </header>
+
+  <section class="panel">
+    <label for="owner" class="label">Usuario GitHub origen</label>
+    <div class="controls">
+      <input id="owner" type="text" value="geozunac3536-jpg" class="input" aria-label="Usuario GitHub">
+      <button class="btn btn-neon" id="fetchBtn">Construir Catálogo</button>
+    </div>
+    <p id="summary" class="summary" aria-live="polite"></p>
+    <div class="actions">
+      <button class="btn btn-outline" id="dlCatalogo" disabled>Descargar <code>catalogo.json</code></button>
+      <button class="btn btn-outline" id="dlJSONLD"  disabled>Descargar <code>tcds_convergencia.jsonld</code></button>
+    </div>
+  </section>
+
+  <section id="listado" class="grid"></section>
+
+  <footer class="footer">
+    Licencia: CC BY 4.0 (texto) / MIT (código). Ver <a class="link" href="LICENSE">LICENSE</a> ·
+    <a class="link" href="robots.txt">robots.txt</a> ·
+    <a class="link" href="sitemap.xml">sitemap.xml</a>
   </footer>
 </main>
 
-<script>
-const $ = sel => document.querySelector(sel);
-const btn = $('#fetchBtn'), list = $('#listado'), sum = $('#summary');
-const btnCat = $('#dlCatalogo'), btnLD = $('#dlJSONLD');
-
-function downloadJSON(obj, filename){
-  const blob = new Blob([JSON.stringify(obj,null,2)], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = filename; document.body.appendChild(a); a.click(); a.remove();
-}
-
-async function fetchAll(owner){
-  // una página basta (<=100 repos). Si crece, agrega paginación.
-  const url = `https://api.github.com/users/${owner}/repos?per_page=100`;
-  const r = await fetch(url, {headers:{'Accept':'application/vnd.github+json'}});
-  if(!r.ok) throw new Error(`GitHub API ${r.status}`);
-  return r.json();
-}
-
-function draw(repos, owner){
-  list.innerHTML = repos.map(x=>{
-    const pagesURL = x.has_pages ? `https://${owner}.github.io/${x.name}/` : '';
-    return `<div class="card">
-      <b>${x.name}</b><br>
-      <a class="btn" href="${x.html_url}" target="_blank">Repo</a>
-      ${x.has_pages?` <a class="btn" href="${pagesURL}" target="_blank">Pages</a>`:''}
-      ${x.homepage?` <a class="btn" href="${x.homepage}" target="_blank">Homepage</a>`:''}
-      <div style="margin-top:8px">${x.description||''}</div>
-      <div class="meta">Lang: ${x.language||'n/d'} · Topics: ${(x.topics||[]).join(', ')}</div>
-    </div>`;
-  }).join('');
-}
-
-function buildCatalogo(repos){
-  return repos.map(x=>({
-    name: x.name,
-    full_name: x.full_name,
-    html_url: x.html_url,
-    description: x.description,
-    language: x.language,
-    default_branch: x.default_branch,
-    fork: x.fork,
-    created_at: x.created_at,
-    updated_at: x.updated_at,
-    pushed_at: x.pushed_at,
-    license: x.license||{},
-    homepage: x.homepage,
-    has_pages: !!x.has_pages,
-    topics: x.topics||[]
-  }));
-}
-
-function buildJSONLD(repos, owner){
-  const date = new Date().toISOString().slice(0,10);
-  return {
-    "@context":"https://schema.org",
-    "@type":"DataCatalog",
-    "name":"Catálogo TCDS — Convergencia",
-    "creator":{"@type":"Person","name":"Genaro Carrasco Ozuna","identifier":"ORCID:0009-0005-6358-9910"},
-    "dateCreated": date,
-    "dataset": repos.map(x=>({
-      "@type":"CreativeWork",
-      "name": x.name,
-      "description": x.description,
-      "codeRepository": x.html_url,
-      "url": x.has_pages ? `https://${owner}.github.io/${x.name}/` : (x.homepage||null),
-      "programmingLanguage": x.language,
-      "license": (x.license && x.license.spdx_id && x.license.spdx_id!=="NOASSERTION") ? x.license.spdx_id : null,
-      "keywords": x.topics||[]
-    }))
-  };
-}
-
-btn.addEventListener('click', async ()=>{
-  btn.disabled = true; btn.textContent = 'Cargando…';
-  list.innerHTML = ''; sum.textContent = '';
-  btnCat.disabled = btnLD.disabled = true;
-
-  const owner = $('#owner').value.trim();
-  try{
-    const repos = await fetchAll(owner);
-    const catalogo = buildCatalogo(repos);
-    const jsonld = buildJSONLD(repos, owner);
-    const pagesCount = catalogo.filter(x=>x.has_pages).length;
-
-    sum.textContent = `Repos: ${catalogo.length} · Pages: ${pagesCount} · Fecha: ${new Date().toISOString().slice(0,10)}`;
-    draw(catalogo, owner);
-
-    btnCat.disabled = false; btnCat.onclick = ()=>downloadJSON(catalogo, 'catalogo.json');
-    btnLD.disabled  = false; btnLD.onclick  = ()=>downloadJSON(jsonld,  'tcds_convergencia.jsonld');
-    btn.textContent = 'Reconstruir';
-  }catch(e){
-    sum.textContent = 'Error: ' + e.message;
-  }finally{
-    btn.disabled = false;
-  }
-});
-</script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
